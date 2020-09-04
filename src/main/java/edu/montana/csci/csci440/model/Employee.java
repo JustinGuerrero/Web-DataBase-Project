@@ -1,10 +1,13 @@
 package edu.montana.csci.csci440.model;
 
+import edu.montana.csci.csci440.util.DB;
+
 import java.sql.*;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Employee {
+public class Employee extends Model {
 
     private String firstName;
     private String lastName;
@@ -16,8 +19,8 @@ public class Employee {
         email = results.getString("Email");
     }
 
-    public static Iterable<Employee> all() {
-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:db/chinook.db");
+    public static List<Employee> all(int page, int count) {
+        try (Connection conn = DB.connect();
              Statement stmt = conn.createStatement()) {
             ResultSet results = stmt.executeQuery("SELECT * FROM employees");
             List<Employee> resultList = new LinkedList<>();
@@ -53,4 +56,17 @@ public class Employee {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public List<Customer> getCustomers() {
+        return Collections.emptyList();
+    }
+
+    public List<Employee> getReports() {
+        return Collections.emptyList();
+    }
+
+    public Employee getBoss() {
+        return null;
+    }
+
 }

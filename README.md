@@ -23,7 +23,7 @@ $ git remote set-url origin git@github.com:<YOUR GITHUB USER NAME>/csci-440-fall
 $ git remote add upstream https://github.com/msu/csci-440-fall2020.git
 ```
 
-Whew!  You now have a private copy of the repository on github and are working in your own branch, named after your NetID.  You can push and pull to this repository and branch with the standard `git pull` and `git push` commands.
+Whew!  You now have a private copy of the repository on github.  You can push and pull to this repository and branch with the standard `git pull` and `git push` commands.
 
 When you want to get an update from the public class repository you can run this command:
 ```
@@ -66,6 +66,7 @@ The web application will be an open-ended project, but must include the followin
 * At least one entity must have all CRUD operations surfaced
 * Search with at least two inputs must be implemented
 * At least one report-like page must exist that makes use of a `GROUP BY` clause
+* Implement at least one Redis cache
 
 
 ### Project Resources

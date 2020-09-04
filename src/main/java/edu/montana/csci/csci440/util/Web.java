@@ -5,7 +5,7 @@ import spark.template.velocity.VelocityTemplateEngine;
 
 import java.util.HashMap;
 
-public class Utils {
+public class Web {
 
     public static String renderTemplate(String index, Object... args) {
         HashMap<Object, Object> map = new HashMap<>();
