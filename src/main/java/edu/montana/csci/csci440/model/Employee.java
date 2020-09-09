@@ -9,11 +9,16 @@ import java.util.List;
 
 public class Employee extends Model {
 
+    private Integer employeeId;
     private String firstName;
     private String lastName;
     private String email;
 
-    public Employee(ResultSet results) throws SQLException {
+    public Employee() {
+        // new employee for insert
+    }
+
+    private Employee(ResultSet results) throws SQLException {
         firstName = results.getString("FirstName");
         lastName = results.getString("LastName");
         email = results.getString("Email");
@@ -31,6 +36,10 @@ public class Employee extends Model {
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }
+    }
+
+    public static Employee findByEmail(String newEmailAddress) {
+        throw new UnsupportedOperationException("Implement me");
     }
 
     public String getFirstName() {
@@ -55,6 +64,10 @@ public class Employee extends Model {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Integer getEmployeeId() {
+        return employeeId;
     }
 
     public List<Customer> getCustomers() {

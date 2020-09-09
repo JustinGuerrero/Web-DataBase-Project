@@ -20,4 +20,33 @@ public class EmployeeTest extends ModelTest {
         assertEquals(2, all.size());
     }
 
+    @Test
+    void testCreateWorks() {
+        Employee emp = makeTempEmployee();
+        assertNull(emp.getEmployeeId());
+        emp.create();
+        assertNotNull(emp.getEmployeeId());
+    }
+
+    private Employee makeTempEmployee() {
+        Employee emp = new Employee();
+        emp.setFirstName("Joe");
+        emp.setLastName("Blow");
+        emp.setEmail("demo@test.com");
+        return emp;
+    }
+
+    @Test
+    void testUpdateWorks() {
+        Employee emp = makeTempEmployee();
+        emp.create();
+        assertNotNull(emp.getEmployeeId());
+        String newEmailAddress = "aNewEmailAddress@test.com";
+        emp.setEmail(newEmailAddress);
+        emp.update();
+
+        Employee found = Employee.findByEmail(newEmailAddress);
+        assertEquals(emp.getEmployeeId(), found.getEmployeeId());
+    }
+
 }
