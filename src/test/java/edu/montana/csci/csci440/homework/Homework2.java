@@ -10,26 +10,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Homework2 extends DBTest {
 
     @Test
-    void selectArtistsWhoseNameHasAnAInIt(){
-        List<Map<String, Object>> results = executeSQL("SELECT * from artists where Name like '%a%'");
-        assertEquals(211, results.size());
-    }
-
-    @Test
-    void selectAllArtistsWithMoreThanOneAlbum(){
-        List<Map<String, Object>> results = executeSQL(
-                "SELECT artists.Name,\n" +
-                        "       COUNT(DISTINCT albums.AlbumId) as Albums\n" +
-                        "FROM albums\n" +
-                        "         JOIN artists on albums.ArtistId = artists.ArtistId\n" +
-                        "GROUP BY albums.ArtistId\n" +
-                        "HAVING Albums > 1;");
-
-        assertEquals(56, results.size());
-        assertEquals("AC/DC", results.get(0).get("Name"));
-    }
-
-    @Test
     void selectTheTrackAndAlbumAndArtistForAllTracksLongerThanSixMinutes() {
         List<Map<String, Object>> results = executeSQL(
                 "SELECT tracks.Name as TrackName, albums.Title as AlbumTitle, artists.Name as ArtistsName FROM tracks " +
