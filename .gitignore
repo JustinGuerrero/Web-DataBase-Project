@@ -3,3 +3,4 @@
 /target/
 /db/
 /repos/student_repos
+/repos/student_repos/**

@@ -1,0 +1,32 @@
+#parse('templates/header.vm')
+
+<h2>Employee</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>FirstName</td>
+        <td>$!employee.FirstName</td>
+    </tr>
+    <tr>
+        <td>LastName</td>
+        <td>$!employee.lastName</td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td>$!employee.email</td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/employees/$employee.EmployeeId/edit">[Edit Employee]</a>
+<a href="/employees/$employee.EmployeeId/delete">[Delete Employee]</a>
+
+
+#parse('templates/footer.vm')

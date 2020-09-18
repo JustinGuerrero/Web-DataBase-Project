@@ -1,14 +1,13 @@
 package edu.montana.csci.csci440.util;
 
+import edu.montana.csci.csci440.model.Employee;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DB {
 
@@ -26,4 +25,17 @@ public class DB {
         }
     }
 
+    public static long getLastID() {
+        try (Connection conn = connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT last_insert_rowid() as ID")) {
+            ResultSet results = stmt.executeQuery();
+            if (results.next()) {
+                return results.getLong("ID");
+            } else {
+                throw new IllegalStateException("Could not get last ID");
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
 }

@@ -1,4 +1,5 @@
 SELECT count(*) FROM tracks;
+SELECT * FROM tracks order by TrackId desc;
 
 INSERT INTO tracks
 (Name, AlbumId, MediaTypeId, GenreId,
@@ -16,6 +17,8 @@ VALUES
 ("Le Matos"),
 ("Zombie Hyperdrive");
 
+select * from artists order by ArtistId desc;
+
 INSERT INTO artists_bak
 SELECT ArtistId, Name
 FROM artists;
@@ -23,14 +26,16 @@ FROM artists;
 UPDATE employees
 SET FirstName='Carson';
 
-SELECT FirstName FROM employees
-where EmployeeId=1;
+SELECT * FROM employees;
 
 UPDATE employees
 SET email = LOWER(
             firstname || "." ||
             lastname || "@montana.edu"
     );
+
+SELECT * FROM artists
+WHERE name LIKE '%Santana%';
 
 DELETE FROM artists
 WHERE name LIKE '%Santana%';
