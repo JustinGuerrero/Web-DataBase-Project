@@ -25,9 +25,8 @@ public class DB {
         }
     }
 
-    public static long getLastID() {
-        try (Connection conn = connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT last_insert_rowid() as ID")) {
+    public static long getLastID(Connection conn) {
+        try (PreparedStatement stmt = conn.prepareStatement("SELECT last_insert_rowid() as ID")) {
             ResultSet results = stmt.executeQuery();
             if (results.next()) {
                 return results.getLong("ID");

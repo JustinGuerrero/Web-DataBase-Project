@@ -1,0 +1,24 @@
+#parse('templates/header.vm')
+
+<h2>Playlist</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Name</td>
+        <td>$!playlist.Name</td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/playlists/$playlist.PlaylistId/edit">[Edit Playlist]</a>
+<a href="/playlists/$playlist.PlaylistId/delete">[Delete Playlist]</a>
+
+
+#parse('templates/footer.vm')

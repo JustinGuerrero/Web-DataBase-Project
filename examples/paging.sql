@@ -42,5 +42,24 @@ CREATE INDEX
 EXPLAIN QUERY PLAN
 SELECT EmployeeId, LastName, FirstName, HireDate
 FROM employees
-WHERE julianday(HireDate) > (SELECT AVG(julianday(HireDate)) FROM employees);
+WHERE HireDate > (SELECT AVG(HireDate) FROM employees);
 
+EXPLAIN QUERY PLAN
+SELECT artists.Name,
+       COUNT(tracks.TrackId) as Tracks,
+       COUNT(DISTINCT albums.AlbumId) as Albums,
+       SUM(tracks.Milliseconds) as Milliseconds
+FROM tracks
+         JOIN albums on tracks.AlbumId = albums.AlbumId
+         JOIN artists on albums.ArtistId = artists.ArtistId
+WHERE tracks.Name LIKE "A%"
+GROUP BY albums.ArtistId
+HAVING Tracks > 2;
+
+EXPLAIN QUERY PLAN
+SELECT main.employees.FirstName as FirstName,
+       main.employees.EmployeeId as EmployeeId,
+       bosses.FirstName as BossFirstName,
+       bosses.EmployeeId as BossEmployeeId
+FROM main.employees
+         JOIN main.employees AS bosses ON main.employees.ReportsTo = bosses.EmployeeId;

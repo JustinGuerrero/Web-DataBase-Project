@@ -25,42 +25,6 @@ public class Employee extends Model {
         employeeId = results.getLong("EmployeeId");
     }
 
-    public static List<Employee> all(int page, int count) {
-        try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM employees LIMIT ?"
-             )) {
-            stmt.setInt(1, count);
-            ResultSet results = stmt.executeQuery();
-            List<Employee> resultList = new LinkedList<>();
-            while (results.next()) {
-                resultList.add(new Employee(results));
-            }
-            return resultList;
-        } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
-        }
-    }
-
-    public static Employee findByEmail(String newEmailAddress) {
-        throw new UnsupportedOperationException("Implement me");
-    }
-
-    public static Employee find(long employeeId) {
-        try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM employees WHERE EmployeeId=?")) {
-            stmt.setLong(1, employeeId);
-            ResultSet results = stmt.executeQuery();
-            if (results.next()) {
-                return new Employee(results);
-            } else {
-                return null;
-            }
-        } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
-        }
-    }
-
     @Override
     public boolean verify() {
         if (firstName == null || "".equals(firstName)) {
@@ -102,7 +66,7 @@ public class Employee extends Model {
                 stmt.setString(2, this.getLastName());
                 stmt.setString(3, this.getEmail());
                 stmt.executeUpdate();
-                employeeId = DB.getLastID();
+                employeeId = DB.getLastID(conn);
                 return true;
             } catch (SQLException sqlException) {
                 throw new RuntimeException(sqlException);
@@ -157,4 +121,39 @@ public class Employee extends Model {
         return null;
     }
 
+    public static List<Employee> all(int page, int count) {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM employees LIMIT ?"
+             )) {
+            stmt.setInt(1, count);
+            ResultSet results = stmt.executeQuery();
+            List<Employee> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new Employee(results));
+            }
+            return resultList;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
+    public static Employee findByEmail(String newEmailAddress) {
+        throw new UnsupportedOperationException("Implement me");
+    }
+
+    public static Employee find(long employeeId) {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM employees WHERE EmployeeId=?")) {
+            stmt.setLong(1, employeeId);
+            ResultSet results = stmt.executeQuery();
+            if (results.next()) {
+                return new Employee(results);
+            } else {
+                return null;
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
 }

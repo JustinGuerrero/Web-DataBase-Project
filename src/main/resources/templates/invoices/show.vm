@@ -1,0 +1,41 @@
+#parse('templates/header.vm')
+
+<h2>Invoice</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Billing Address</td>
+        <td>$!invoice.BillingAddress</td>
+    </tr>
+    <tr>
+        <td>Billing City</td>
+        <td>$!invoice.BillingCity</td>
+    </tr>
+    <tr>
+        <td>Billing State</td>
+        <td>$!invoice.BillingState</td>
+    </tr>
+    <tr>
+        <td>Billing Country</td>
+        <td>$!invoice.BillingCountry</td>
+    </tr>
+    <tr>
+        <td>Billing Postal Code</td>
+        <td>$!invoice.BillingPostalCode</td>
+    </tr>
+    <tr>
+        <td>Total</td>
+        <td>$!invoice.Total</td>
+    </tr>
+    </tbody>
+</table>
+
+
+#parse('templates/footer.vm')

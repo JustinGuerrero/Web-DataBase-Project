@@ -1,0 +1,24 @@
+#parse('templates/header.vm')
+
+<h2>Artist</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Name</td>
+        <td>$!artist.Name</td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/artists/$artist.ArtistId/edit">[Edit Artist]</a>
+<a href="/artists/$artist.ArtistId/delete">[Delete Artist]</a>
+
+
+#parse('templates/footer.vm')

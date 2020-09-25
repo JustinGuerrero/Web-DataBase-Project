@@ -23,6 +23,9 @@
     </tbody>
 </table>
 
+$web.pagingWidget($employees)
+
+
 <a href="/employees/new">[Create New Employee]</a>
 
 #parse('templates/footer.vm')

@@ -1,0 +1,24 @@
+#parse('templates/header.vm')
+
+<h2>Album</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>Title</td>
+        <td>$!album.Title</td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/albums/$album.AlbumId/edit">[Edit Album]</a>
+<a href="/albums/$album.AlbumId/delete">[Delete Album]</a>
+
+
+#parse('templates/footer.vm')
