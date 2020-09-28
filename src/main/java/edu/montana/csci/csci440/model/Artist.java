@@ -65,7 +65,7 @@ public class Artist extends Model {
         }
     }
 
-    public static Artist find(int i) {
+    public static Artist find(long i) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement("SELECT * FROM artists WHERE ArtistId=?")) {
             stmt.setLong(1, i);

@@ -33,11 +33,12 @@ public class TracksController {
         /* READ */
         get("/tracks", (req, resp) -> {
             String search = req.queryParams("q");
+            String orderBy = req.queryParams("o");
             List<Track> tracks;
             if (search != null) {
-                tracks = Track.search(Web.getPage(), Web.PAGE_SIZE, search);
+                tracks = Track.search(Web.getPage(), Web.PAGE_SIZE, orderBy, search);
             } else {
-                tracks = Track.all(Web.getPage(), Web.PAGE_SIZE);
+                tracks = Track.all(Web.getPage(), Web.PAGE_SIZE, orderBy);
             }
             return Web.renderTemplate("templates/tracks/index.vm",
                     "tracks", tracks);

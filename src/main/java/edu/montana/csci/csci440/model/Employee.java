@@ -2,6 +2,7 @@ package edu.montana.csci.csci440.model;
 
 import edu.montana.csci.csci440.util.DB;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -23,6 +24,11 @@ public class Employee extends Model {
         lastName = results.getString("LastName");
         email = results.getString("Email");
         employeeId = results.getLong("EmployeeId");
+    }
+
+    public static List<Employee.SalesSummary> getSalesSummaries() {
+        //TODO - a GROUP BY query to determine the sales, using the SalesSummary class
+        return Collections.emptyList();
     }
 
     @Override
@@ -112,13 +118,31 @@ public class Employee extends Model {
     }
 
     public List<Customer> getCustomers() {
-        return Collections.emptyList();
+        return Customer.forEmployee(employeeId);
     }
+
     public List<Employee> getReports() {
-        return Collections.emptyList();
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM employees WHERE ReportsTo=?"
+             )) {
+            stmt.setLong(1, this.getEmployeeId());
+            ResultSet results = stmt.executeQuery();
+            List<Employee> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new Employee(results));
+            }
+            return resultList;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
     public Employee getBoss() {
         return null;
+    }
+
+    public static List<Employee> all() {
+        return all(0, Integer.MAX_VALUE);
     }
 
     public static List<Employee> all(int page, int count) {
@@ -154,6 +178,41 @@ public class Employee extends Model {
             }
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
+        }
+    }
+
+    public static class SalesSummary {
+        String firstName;
+        String lastName;
+        String email;
+        Long salesCount;
+        BigDecimal salesTotals;
+        private SalesSummary(ResultSet results) throws SQLException {
+            firstName = results.getString("FirstName");
+            lastName = results.getString("LastName");
+            email = results.getString("Email");
+            salesCount = results.getLong("SalesCount");
+            salesTotals = results.getBigDecimal("SalesTotal");
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public Long getSalesCount() {
+            return salesCount;
+        }
+
+        public BigDecimal getSalesTotals() {
+            return salesTotals;
         }
     }
 }

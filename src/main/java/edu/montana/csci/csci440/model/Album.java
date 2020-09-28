@@ -13,6 +13,7 @@ import java.util.List;
 public class Album extends Model {
 
     long albumId;
+    long artistId;
     String title;
 
     public Album() {
@@ -21,14 +22,15 @@ public class Album extends Model {
     private Album(ResultSet results) throws SQLException {
         title = results.getString("Title");
         albumId = results.getLong("AlbumId");
+        artistId = results.getLong("ArtistId");
     }
 
     public Artist getArtist() {
-        return null;
+        return Artist.find(artistId);
     }
 
     public List<Track> getTracks() {
-        return Collections.emptyList();
+        return Track.forAlbum(albumId);
     }
 
     public long getAlbumId() {
@@ -45,6 +47,10 @@ public class Album extends Model {
 
     public void setTitle(String name) {
         this.title = name;
+    }
+
+    public long getArtistId() {
+        return artistId;
     }
 
     public static List<Album> all() {
@@ -68,7 +74,7 @@ public class Album extends Model {
         }
     }
 
-    public static Album find(int i) {
+    public static Album find(long i) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement("SELECT * FROM albums WHERE AlbumId=?")) {
             stmt.setLong(1, i);

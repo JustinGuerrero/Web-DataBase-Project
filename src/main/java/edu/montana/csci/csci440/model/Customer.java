@@ -13,20 +13,17 @@ import java.util.List;
 public class Customer extends Model {
 
     private long customerId;
+    private long supportRepId;
     private String firstName;
     private String lastName;
     private String email;
 
-    Employee getSupportRep() {
-        return null;
+    public Employee getSupportRep() {
+         return Employee.find(supportRepId);
     }
 
     public List<Invoice> getInvoices(){
         return Collections.emptyList();
-    }
-
-    public Customer() {
-        // new customer for insert
     }
 
     private Customer(ResultSet results) throws SQLException {
@@ -34,6 +31,7 @@ public class Customer extends Model {
         lastName = results.getString("LastName");
         email = results.getString("Email");
         customerId = results.getLong("CustomerId");
+        supportRepId = results.getLong("SupportRepId");
     }
 
     public String getFirstName() {
@@ -57,6 +55,10 @@ public class Customer extends Model {
 
     public long getCustomerId() {
         return customerId;
+    }
+
+    public long getSupportRepId() {
+        return supportRepId;
     }
 
     public static List<Customer> all(int page, int count) {
@@ -94,4 +96,21 @@ public class Customer extends Model {
             throw new RuntimeException(sqlException);
         }
     }
+
+    public static List<Customer> forEmployee(long employeeId) {
+        String query = "SELECT * FROM customers WHERE SupportRepId=?";
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setLong(1, employeeId);
+            ResultSet results = stmt.executeQuery();
+            List<Customer> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new Customer(results));
+            }
+            return resultList;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
 }
