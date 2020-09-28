@@ -27,7 +27,7 @@
 <h4>Tracks</h4>
 <ul>
     <li>All CRUD operations</li>
-    <li><code>Albums.validate()</code></li>
+    <li><code>Tracks.validate()</code></li>
     <li>A Simple Search that includes artist name and album title in the search criteria</li>
     <li>Implement advanced search with at least three fields to search by</li>
     <li>Tracks should include Artist and Album name in display, in a query-efficient manner</li>
@@ -45,7 +45,7 @@
 <ul>
     <li>All CRUD operations</li>
     <li>Implement Paging</li>
-    <li><code>Albums.validate()</code></li>
+    <li><code>Employees.validate()</code></li>
     <li>Detail view should show boss, Reports and Customers (no paging)</li>
     <li>Employee Report 1: An employee tree (written inefficiently currently, optimize to issue only one query)</li>
     <li>Employee Report 2: A sales leader report: each employee with the number of invoices associated sorted
