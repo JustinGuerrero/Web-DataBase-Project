@@ -89,4 +89,9 @@ public class Album extends Model {
         }
     }
 
+    public static List<Album> getForArtist(long artistId) {
+        // TODO implement
+        return Collections.emptyList();
+    }
+
 }

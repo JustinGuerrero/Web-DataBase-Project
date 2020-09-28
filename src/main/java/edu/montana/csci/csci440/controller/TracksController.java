@@ -40,8 +40,10 @@ public class TracksController {
             } else {
                 tracks = Track.all(Web.getPage(), Web.PAGE_SIZE, orderBy);
             }
+            // TODO - implement cache of count w/ Redis
+            long totalTracks = Track.count();
             return Web.renderTemplate("templates/tracks/index.vm",
-                    "tracks", tracks);
+                    "tracks", tracks, "totalTracks", totalTracks);
         });
 
         get("/tracks/search", (req, resp) -> {

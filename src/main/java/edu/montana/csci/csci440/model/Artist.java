@@ -25,7 +25,7 @@ public class Artist extends Model {
     }
 
     public List<Album> getAlbums(){
-        return Collections.emptyList();
+        return Album.getForArtist(artistId);
     }
 
     public long getArtistId() {

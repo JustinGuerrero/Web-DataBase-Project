@@ -54,6 +54,20 @@ public class Track extends Model {
         }
     }
 
+    public static long count() {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) as Count FROM tracks")) {
+            ResultSet results = stmt.executeQuery();
+            if (results.next()) {
+                return results.getLong("Count");
+            } else {
+                throw new IllegalStateException("Should find a count!");
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+
     public Album getAlbum() {
         return Album.find(albumId);
     }
