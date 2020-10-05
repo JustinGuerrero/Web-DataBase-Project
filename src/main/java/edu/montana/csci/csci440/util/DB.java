@@ -1,6 +1,7 @@
 package edu.montana.csci.csci440.util;
 
 import edu.montana.csci.csci440.model.Employee;
+import org.sqlite.SQLiteConfig;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +16,11 @@ public class DB {
 
     public static Connection connect() throws SQLException {
         CONNECTION_COUNT++;
-        return DriverManager.getConnection("jdbc:sqlite:db/chinook.db");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite:db/chinook.db");
+        try (Statement statement = connection.createStatement();){
+            statement.execute("PRAGMA foreign_keys = ON");
+        };
+        return connection;
     }
 
     public static void reset() throws IOException {
