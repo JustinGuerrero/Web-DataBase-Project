@@ -93,4 +93,26 @@ public class TrackTest extends DBTest {
         assertEquals(3, track.getPlaylists().size());
     }
 
+    @Test
+    void trackCountIsCachedInRedis(){
+
+        long initialCount = DB.getConnectionCount();
+        Long count = Track.count();
+        assertEquals(initialCount + 1, DB.getConnectionCount());
+
+        // should be cached for second time
+        count = Track.count();
+        assertEquals(initialCount + 1, DB.getConnectionCount());
+
+        Track track = new Track();
+        track.setName("Example");
+        track.setAlbum(Album.find(1));
+        assertTrue(track.create());
+
+        // cache should have been invalidated
+        count = Track.count();
+        assertEquals(initialCount + 2, DB.getConnectionCount());
+
+    }
+
 }
