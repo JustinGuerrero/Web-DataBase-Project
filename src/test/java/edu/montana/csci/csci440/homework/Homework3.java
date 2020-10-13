@@ -16,7 +16,18 @@ public class Homework3 extends DBTest {
      */
     public void createTracksPlusView(){
         //TODO fill this in
-        executeDDL("CREATE VIEW tracksPlus");
+        executeDDL("CREATE VIEW IF NOT EXISTS tracksPlus AS\n" +
+                "SELECT\n" +
+                "    trackid,\n" +
+                "    tracks.name,\n" +
+                "    albums.Title AS AlbumTitle,\n" +
+                "    genres.Name AS GenreName, \n" +
+                "    artists.Name AS ArtistName\n" +
+                "FROM\n" +
+                "    artists, tracks \n" +
+                "    INNER JOIN albums ON Albums.AlbumId = tracks.AlbumId\n" +
+                "    INNER JOIN genres ON genres.Genreid = tracks.GenreId" +
+                "    INNER JOIN artists ON artists.ArtistID = tracks.Name;");
 
         List<Map<String, Object>> results = executeSQL("SELECT * FROM tracksPlus ORDER BY TrackId");
         assertEquals(3503, results.size());
@@ -36,8 +47,17 @@ public class Homework3 extends DBTest {
      */
     public void createGrammyInfoTable(){
         //TODO fill these in
-        executeDDL("create table grammy_categories");
-        executeDDL("create table grammy_infos");
+
+        executeDDL("CREATE TABLE IF NOT EXISTS grammy_categories(" +
+                "Name TEXT, " +
+                "GrammyCategoryId OBJECT," +
+                "Value INTEGER);");
+        executeDDL("CREATE TABLE IF NOT EXISTS grammy_infos(" +
+                "ArtistId INTEGER, " +
+                "AlbumId INTEGER, " +
+                "TrackId INTEGER," +
+                "GrammyCategoryId OBJECT,"+
+                "Status INTEGER);");
 
         // TEST CODE
         executeUpdate("INSERT INTO grammy_categories(Name) VALUES ('Greatest Ever');");
@@ -61,7 +81,13 @@ public class Homework3 extends DBTest {
         Integer before = (Integer) executeSQL("SELECT COUNT(*) as COUNT FROM genres").get(0).get("COUNT");
 
         //TODO fill this in
-        executeUpdate("INSERT");
+        executeUpdate("INSERT INTO genres (Name)" +
+                "VALUES \n"  +
+                "('Techno'),\n" +
+                "('Tech_House'),\n" +
+                "('House'),\n" +
+                "('Deep_House'),\n" +
+                "('Reggaeton');");
 
         Integer after = (Integer) executeSQL("SELECT COUNT(*) as COUNT FROM genres").get(0).get("COUNT");
         assertEquals(before + 5, after);
