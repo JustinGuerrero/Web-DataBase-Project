@@ -240,8 +240,8 @@ public class Track extends Model {
         return all(0, Integer.MAX_VALUE);
     }
 
-    public static List<Track> all(int i, int maxValue) {
-        return all(i, maxValue, "TrackId");
+    public static List<Track> all(int page, int count) {
+        return all(page, count, "TrackId");
     }
 
     public static List<Track> all(int page, int count, String orderBy) {
