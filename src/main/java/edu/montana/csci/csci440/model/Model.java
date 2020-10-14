@@ -1,8 +1,10 @@
 package edu.montana.csci.csci440.model;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 // base class for entities
 public class Model {
@@ -44,8 +46,7 @@ public class Model {
         return _errors.size() > 0;
     }
 
-<<<<<<< HEAD
-=======
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -83,5 +84,4 @@ public class Model {
         }
         return Objects.hash(values.toArray());
     }
->>>>>>> 089cc343544bddb1266a1a5edacd1680a1855e93
 }
