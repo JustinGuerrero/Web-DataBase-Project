@@ -26,6 +26,8 @@ public class Customer extends Model {
         return Collections.emptyList();
     }
 
+    public Customer(){}
+
     private Customer(ResultSet results) throws SQLException {
         firstName = results.getString("FirstName");
         lastName = results.getString("LastName");
@@ -100,6 +102,66 @@ public class Customer extends Model {
                 resultList.add(new Customer(results));
             }
             return resultList;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+    }
+    @Override
+    public boolean verify() {
+        if (firstName == null || "".equals(firstName)) {
+            addError("Name can't be null or blank!");
+        }
+        if (lastName == null || "".equals(lastName)) {
+            addError("Name can't be null or blank!");
+        }
+        return !hasErrors();
+    }
+
+    @Override
+    public boolean create() {
+        if (verify()) {
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "INSERT INTO customers (FirstName, LastName, Email) VALUES (?,?, ?)")) {
+                stmt.setString(1, this.getFirstName());
+                stmt.setString(2, getLastName());
+                stmt.setString(3, getEmail());
+                stmt.executeUpdate();
+                customerId = DB.getLastID(conn);
+                return true;
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean update() {
+        if (verify()) {
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "UPDATE customers  SET FirstName=?, LastName=? WHERE (?,?)")) {
+                stmt.setString(1, this.getFirstName());
+                stmt.setString(2, this.getLastName());
+                stmt.executeUpdate();
+                return true;
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void delete() {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "DELETE FROM customers WHERE CustomerId=?")) {
+            stmt.setLong(1, this.getCustomerId());
+            stmt.executeUpdate();
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
         }

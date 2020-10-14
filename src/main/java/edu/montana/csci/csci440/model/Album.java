@@ -98,6 +98,13 @@ public class Album extends Model {
         return Collections.emptyList();
     }
 
+    @Override
+    public boolean verify() {
+        if (title == null || "".equals(title)) {
+            addError("Name can't be null or blank!");
+        }
+        return !hasErrors();
+    }
 
     @Override
     public boolean create() {

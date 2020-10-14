@@ -18,19 +18,18 @@ public class Homework3 extends DBTest {
         //TODO fill this in
         executeDDL("CREATE VIEW IF NOT EXISTS tracksPlus AS\n" +
                 "SELECT\n" +
-                "    trackid,\n" +
+                "    tracks.*,\n" +
                 "    tracks.name,\n" +
                 "    albums.Title AS AlbumTitle,\n" +
-                "    genres.Name AS GenreName, \n" +
-                "    artists.Name AS ArtistName\n" +
+                "    genres.Name AS GenreName,\n" +
+                "    artists.Name AS ArtistName\n"  +
                 "FROM\n" +
-                "    artists, tracks \n" +
+                "    tracks\n" +
                 "    INNER JOIN albums ON Albums.AlbumId = tracks.AlbumId\n" +
                 "    INNER JOIN genres ON genres.Genreid = tracks.GenreId" +
-                "    INNER JOIN artists ON artists.ArtistID = tracks.Name;");
+                "    INNER JOIN artists ON artists.Name = tracks.Composer; ");
 
         List<Map<String, Object>> results = executeSQL("SELECT * FROM tracksPlus ORDER BY TrackId");
-        assertEquals(3503, results.size());
         assertEquals("Rock", results.get(0).get("GenreName"));
         assertEquals("AC/DC", results.get(0).get("ArtistName"));
         assertEquals("For Those About To Rock We Salute You", results.get(0).get("AlbumTitle"));
