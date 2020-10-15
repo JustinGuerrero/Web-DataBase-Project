@@ -75,6 +75,7 @@ public class Model {
         Field[] declaredFields = this.getClass().getDeclaredFields();
         List<Object> values = new LinkedList<>();
         for (Field declaredField : declaredFields) {
+            declaredField.setAccessible(true);
             try {
                 values.add(declaredField.get(this));
             } catch (IllegalAccessException e) {
