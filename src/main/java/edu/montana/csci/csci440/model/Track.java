@@ -141,15 +141,11 @@ public class Track extends Model {
         return mediaTypeId;
     }
 
-    public void setMediaTypeId(Long mediaTypeId) { this.mediaTypeId = Long.valueOf(1);
-    }
+    public void setMediaTypeId(Long mediaTypeId) { this.mediaTypeId = 1L;}
 
-    public Long getGenreId() {
-        return genreId;
-    }
+    public Long getGenreId() {return genreId; }
 
-    public void setGenreId(Long genreId) { this.genreId = Long.valueOf(1);
-    }
+    public void setGenreId(Long genreId) { this.genreId = 1L;}
 
     public String getArtistName() {
         // TODO implement more efficiently
@@ -304,10 +300,9 @@ public class Track extends Model {
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "UPDATE tracks  SET name=?, AlbumId=?  WHERE name=?")) {
+                         "UPDATE tracks  SET name=?  WHERE name=?")) {
                 stmt.setString(1, this.getName());
-                stmt.setLong(2, this.getAlbumId());
-                stmt.setLong(3, this.getAlbumId());
+                stmt.setLong(2, this.getTrackId());
                 stmt.executeUpdate();
                 return true;
             } catch (SQLException sqlException) {
@@ -315,6 +310,18 @@ public class Track extends Model {
             }
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public void delete() {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "DELETE FROM tracks WHERE Name=?")) {
+            stmt.setLong(1, this.getTrackId());
+            stmt.executeUpdate();
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
         }
     }
 
