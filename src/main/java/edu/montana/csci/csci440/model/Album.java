@@ -64,9 +64,10 @@ public class Album extends Model {
     public static List<Album> all(int page, int count) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM albums LIMIT ?"
+                     "SELECT * FROM albums LIMIT ? OFFSET ?"
              )) {
             stmt.setInt(1, count);
+            stmt.setInt(2, (page-1)*count);
             ResultSet results = stmt.executeQuery();
             List<Album> resultList = new LinkedList<>();
             while (results.next()) {
@@ -100,8 +101,12 @@ public class Album extends Model {
 
     @Override
     public boolean verify() {
+        _errors.clear(); // clear any existing errors
         if (title == null || "".equals(title)) {
-            addError("Name can't be null or blank!");
+            addError("Can't be null or blank!");
+        }
+        if (artistId == null || "".equals(artistId)){
+            addError("Can't be null or blank dood!");
         }
         return !hasErrors();
     }
@@ -130,8 +135,10 @@ public class Album extends Model {
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "UPDATE albums  SET Title=? WHERE Title=?")) {
+                         "UPDATE albums  SET Title=?, ArtistId=?  WHERE AlbumId=?")) {
                 stmt.setString(1, this.getTitle());
+                stmt.setLong(2, this.getArtistId());
+                stmt.setLong(3, this.getAlbumId());
                 stmt.executeUpdate();
                 return true;
             } catch (SQLException sqlException) {

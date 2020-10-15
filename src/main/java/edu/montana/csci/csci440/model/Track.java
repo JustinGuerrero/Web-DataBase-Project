@@ -141,16 +141,14 @@ public class Track extends Model {
         return mediaTypeId;
     }
 
-    public void setMediaTypeId(Long mediaTypeId) {
-        this.mediaTypeId = mediaTypeId;
+    public void setMediaTypeId(Long mediaTypeId) { this.mediaTypeId = Long.valueOf(1);
     }
 
     public Long getGenreId() {
         return genreId;
     }
 
-    public void setGenreId(Long genreId) {
-        this.genreId = genreId;
+    public void setGenreId(Long genreId) { this.genreId = Long.valueOf(1);
     }
 
     public String getArtistName() {
@@ -248,7 +246,7 @@ public class Track extends Model {
     public static List<Track> all(int page, int count, String orderBy) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM tracks LIMIT ?"//add offset at the end here also stmt.setInt (page - 1) * count for second arg param
+                     "SELECT * FROM tracks LIMIT ? OFFSET ?"//add offset at the end here also stmt.setInt (page - 1) * count for second arg param
              )) {
             stmt.setInt(1, count);
             stmt.setInt(2, (page-1)*count);
@@ -260,6 +258,63 @@ public class Track extends Model {
             return resultList;
         } catch (SQLException sqlException) {
             throw new RuntimeException(sqlException);
+        }
+    }
+
+    @Override
+    public boolean verify() {
+        _errors.clear(); // clear any existing errors
+        if (name == null || "".equals(name)) {
+            addError("Name can't be null or blank!");
+        }
+        if (albumId == null || "".equals(albumId)) {
+            addError("Wack you gotta put a name in");
+        }
+        return !hasErrors();
+    }
+
+
+    @Override
+    public boolean create() {
+        if (verify()) {
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "INSERT INTO tracks (name, Milliseconds, Bytes, UnitPrice, TrackId, AlbumId, MediaTypeId, GenreId) VALUES (?,?,?,?,?,?,?,?)")) {
+                stmt.setString(1, this.getName());
+                stmt.setLong(2, this.getMilliseconds());
+                stmt.setLong(3, this.getBytes());
+                stmt.setBigDecimal(4, this.getUnitPrice());
+                stmt.setLong(5, this.getTrackId());
+                stmt.setLong(6, this.getAlbumId());
+                stmt.setLong(7, this.getMediaTypeId());
+                stmt.setLong(8, this.getGenreId());
+                stmt.executeUpdate();
+                trackId = DB.getLastID(conn);
+                return true;
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean update() {
+        if (verify()) {
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement(
+                         "UPDATE tracks  SET name=?, AlbumId=?  WHERE name=?")) {
+                stmt.setString(1, this.getName());
+                stmt.setLong(2, this.getAlbumId());
+                stmt.setLong(3, this.getAlbumId());
+                stmt.executeUpdate();
+                return true;
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
+            }
+        } else {
+            return false;
         }
     }
 
