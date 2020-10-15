@@ -45,9 +45,6 @@ public class Employee extends Model {
         if(email==null || "".equals(email)) {
             addError("put in an email ding dong");
         }
-        if(email == null || !email.contains("@")){
-            addError("You forgot an @");
-        }
         return !hasErrors();
     }
 
@@ -56,7 +53,7 @@ public class Employee extends Model {
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "UPDATE employees SET FirstName=?, LastName=?, Email=? WHERE EmployeeId=?")) {
+                         "UPDATE employees SET FirstName=?, LastName=?, Email=?  WHERE EmployeeId=?")) {
                 stmt.setString(1, this.getFirstName());
                 stmt.setString(2, this.getLastName());
                 stmt.setString(3, this.getEmail());

@@ -37,8 +37,8 @@ public class Track extends Model {
         unitPrice = results.getBigDecimal("UnitPrice");
         trackId = results.getLong("TrackId");
         albumId = results.getLong("AlbumId");
-        mediaTypeId = results.getLong("MediaTypeId");
-        genreId = results.getLong("GenreId");
+        mediaTypeId =1L;//results.getLong("MediaTypeId");
+        genreId = 1L;//results.getLong("GenreId");
     }
 
     public static Track find(int i) {
@@ -101,9 +101,7 @@ public class Track extends Model {
         this.name = name;
     }
 
-    public Long getMilliseconds() {
-        return milliseconds;
-    }
+    public Long getMilliseconds() { return milliseconds;}
 
     public void setMilliseconds(Long milliseconds) {
         this.milliseconds = milliseconds;
@@ -141,11 +139,11 @@ public class Track extends Model {
         return mediaTypeId;
     }
 
-    public void setMediaTypeId(Long mediaTypeId) { this.mediaTypeId = 1L;}
+    public void setMediaTypeId(Long mediaTypeId) { this.mediaTypeId = mediaTypeId;}
 
     public Long getGenreId() {return genreId; }
 
-    public void setGenreId(Long genreId) { this.genreId = 1L;}
+    public void setGenreId(Long genreId) { this.genreId = genreId;}
 
     public String getArtistName() {
         // TODO implement more efficiently
@@ -300,9 +298,11 @@ public class Track extends Model {
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "UPDATE tracks  SET name=?  WHERE name=?")) {
+                         "UPDATE tracks  SET name=?, AlbumId=?  WHERE TrackId=?")) {
                 stmt.setString(1, this.getName());
-                stmt.setLong(2, this.getTrackId());
+                stmt.setLong(2, this.getAlbumId());
+                stmt.setLong(3, this.getTrackId());
+
                 stmt.executeUpdate();
                 return true;
             } catch (SQLException sqlException) {
