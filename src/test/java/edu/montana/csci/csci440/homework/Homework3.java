@@ -26,7 +26,7 @@ public class Homework3 extends DBTest {
                 "FROM\n" +
                 "    tracks\n" +
                 "    INNER JOIN albums ON Albums.AlbumId = tracks.AlbumId\n" +
-                "    INNER JOIN genres ON genres.Genreid = tracks.GenreId" +
+                "    INNER JOIN genres ON genres.Genreid = tracks.GenreId\n" +
                 "    INNER JOIN artists ON artists.Name = tracks.Composer; ");
 
         List<Map<String, Object>> results = executeSQL("SELECT * FROM tracksPlus ORDER BY TrackId");
@@ -47,16 +47,16 @@ public class Homework3 extends DBTest {
     public void createGrammyInfoTable(){
         //TODO fill these in
 
-        executeDDL("CREATE TABLE IF NOT EXISTS grammy_categories(" +
-                "Name TEXT, " +
-                "GrammyCategoryId OBJECT," +
-                "Value INTEGER);");
-        executeDDL("CREATE TABLE IF NOT EXISTS grammy_infos(" +
-                "ArtistId INTEGER, " +
-                "AlbumId INTEGER, " +
-                "TrackId INTEGER," +
-                "GrammyCategoryId OBJECT,"+
-                "Status INTEGER);");
+        executeDDL("CREATE TABLE IF NOT EXISTS grammy_categories(\n" +
+                "Name NVARCHAR(120), \n" +
+                "GrammyCategoryId INTEGER,\n" +
+                "Value INTEGER);\n");
+        executeDDL("CREATE TABLE IF NOT EXISTS grammy_infos(\n" +
+                "ArtistId INTEGER, \n" +
+                "AlbumId INTEGER, \n" +
+                "TrackId INTEGER,\n" +
+                "GrammyCategoryId INTEGER,\n"+
+                "Status INTEGER);\n");
 
         // TEST CODE
         executeUpdate("INSERT INTO grammy_categories(Name) VALUES ('Greatest Ever');");

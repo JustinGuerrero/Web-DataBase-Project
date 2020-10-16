@@ -43,7 +43,7 @@ public class Employee extends Model {
             addError("LastName can't be null!");
         }
         if(email==null || "".equals(email)) {
-            addError("put in an email ding dong");
+            addError("Email can't be null!");
         }
         return !hasErrors();
     }
@@ -79,6 +79,7 @@ public class Employee extends Model {
                 stmt.setString(3, this.getEmail());
                 stmt.executeUpdate();
                 employeeId = DB.getLastID(conn);
+
                 return true;
             } catch (SQLException sqlException) {
                 throw new RuntimeException(sqlException);
@@ -171,7 +172,19 @@ public class Employee extends Model {
     }
 
     public static Employee findByEmail(String newEmailAddress) {
-        throw new UnsupportedOperationException("Implement me");
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT Email FROM employees WHERE EmployeeId=?")) {
+            stmt.setString(1, newEmailAddress);
+            ResultSet results = stmt.executeQuery();
+            if (results.next()) {
+                return new Employee(results);
+            } else {
+                return null;
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+        //throw new UnsupportedOperationException("Implement me");
     }
 
     public static Employee find(long employeeId) {
