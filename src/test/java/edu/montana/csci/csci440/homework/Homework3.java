@@ -49,13 +49,13 @@ public class Homework3 extends DBTest {
 
         executeDDL("CREATE TABLE IF NOT EXISTS grammy_categories(\n" +
                 "Name NVARCHAR(120), \n" +
-                "GrammyCategoryId INTEGER,\n" +
+                "GrammyCategoryId INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
                 "Value INTEGER);\n");
         executeDDL("CREATE TABLE IF NOT EXISTS grammy_infos(\n" +
                 "ArtistId INTEGER, \n" +
                 "AlbumId INTEGER, \n" +
                 "TrackId INTEGER,\n" +
-                "GrammyCategoryId INTEGER,\n"+
+                "GrammyCategoryId INTEGER PRIMARY KEY AUTOINCREMENT,\n"+
                 "Status INTEGER);\n");
 
         // TEST CODE
