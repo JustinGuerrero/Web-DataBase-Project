@@ -26,8 +26,8 @@ public class Homework3 extends DBTest {
                 "FROM\n" +
                 "    tracks\n" +
                 "    INNER JOIN albums ON Albums.AlbumId = tracks.AlbumId\n" +
-                "    INNER JOIN genres ON genres.Genreid = tracks.GenreId\n" +
-                "    INNER JOIN artists ON artists.Name = tracks.Composer; ");
+                "    INNER JOIN genres ON genres.GenreId = tracks.GenreId\n" +
+                "    INNER JOIN artists ON albums.ArtistId = artists.ArtistId; ");
 
         List<Map<String, Object>> results = executeSQL("SELECT * FROM tracksPlus ORDER BY TrackId");
         assertEquals("Rock", results.get(0).get("GenreName"));
