@@ -19,12 +19,12 @@ public class Track extends Model {
 
     private Long trackId;
     private Long albumId;
-    private Long mediaTypeId;
-    private Long genreId;
+    private Long mediaTypeId = 1L;
+    private Long genreId =1L;
     private String name;
-    private Long milliseconds;
-    private Long bytes;
-    private BigDecimal unitPrice;
+    private Long milliseconds = 0L;
+    private Long bytes= 0L;
+    private BigDecimal unitPrice = new BigDecimal(0);
 
     public Track() {
         // new track for insert
@@ -273,15 +273,14 @@ public class Track extends Model {
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "INSERT INTO tracks (name, Milliseconds, Bytes, UnitPrice, TrackId, AlbumId, MediaTypeId, GenreId) VALUES (?,?,?,?,?,?,?,?)")) {
+                         "INSERT INTO tracks (name, Milliseconds, Bytes, UnitPrice, AlbumId, MediaTypeId, GenreId) VALUES (?,?,?,?,?,?,?)")) {
                 stmt.setString(1, this.getName());
                 stmt.setLong(2, this.getMilliseconds());
                 stmt.setLong(3, this.getBytes());
                 stmt.setBigDecimal(4, this.getUnitPrice());
-                stmt.setLong(5, this.getTrackId());
-                stmt.setLong(6, this.getAlbumId());
-                stmt.setLong(7, this.getMediaTypeId());
-                stmt.setLong(8, this.getGenreId());
+                stmt.setLong(5, this.getAlbumId());
+                stmt.setLong(6, this.getMediaTypeId());
+                stmt.setLong(7, this.getGenreId());
                 stmt.executeUpdate();
                 trackId = DB.getLastID(conn);
                 return true;

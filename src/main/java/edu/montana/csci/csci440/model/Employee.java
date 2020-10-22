@@ -42,9 +42,11 @@ public class Employee extends Model {
         if (lastName == null || "".equals(lastName)) {
             addError("LastName can't be null!");
         }
-        if(email==null || "".equals(email)) {
+
+        if(email==null || "".equals(email) || !email.contains("@")) {
             addError("Email can't be null!");
         }
+
         return !hasErrors();
     }
 
@@ -73,13 +75,13 @@ public class Employee extends Model {
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "INSERT INTO employees (FirstName, LastName, Email) VALUES (?, ?, ?)")) {
+                         "INSERT INTO employees (FirstName, LastName, title, Email) VALUES (?, ?, ?, ?)")) {
                 stmt.setString(1, this.getFirstName());
                 stmt.setString(2, this.getLastName());
+                stmt.setString(3, this.getTitle());
                 stmt.setString(3, this.getEmail());
                 stmt.executeUpdate();
                 employeeId = DB.getLastID(conn);
-
                 return true;
             } catch (SQLException sqlException) {
                 throw new RuntimeException(sqlException);
@@ -124,6 +126,13 @@ public class Employee extends Model {
         return employeeId;
     }
 
+    public void setTitle(String programmer) {
+        title = programmer;
+    }
+    public String getTitle(){
+        return title;
+    }
+
     public List<Customer> getCustomers() {
         return Customer.forEmployee(employeeId);
     }
@@ -145,8 +154,18 @@ public class Employee extends Model {
         }
     }
     public Employee getBoss() {
-        //TODO implement
-        return null;
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT employeeId FROM employees WHERE ReportsTo=?")) {
+            stmt.setLong(1, employeeId);
+            ResultSet results = stmt.executeQuery();
+            if (results.next()) {
+                return new Employee(results);
+            } else {
+                return null;
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
 
     public static List<Employee> all() {
@@ -202,9 +221,6 @@ public class Employee extends Model {
         }
     }
 
-    public void setTitle(String programmer) {
-        title = programmer;
-    }
 
     public void setReportsTo(Employee employee) {
         // TODO implement
@@ -243,5 +259,6 @@ public class Employee extends Model {
         public BigDecimal getSalesTotals() {
             return salesTotals;
         }
+
     }
 }
