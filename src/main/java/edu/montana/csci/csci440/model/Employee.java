@@ -165,8 +165,8 @@ public class Employee extends Model {
     }
     public Employee getBoss() {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT employeeId FROM employees WHERE ReportsTo=?")) {
-            stmt.setLong(1, employeeId);
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM employees WHERE ReportsTo=?")) {
+            stmt.setLong(1, this.getEmployeeId());
             ResultSet results = stmt.executeQuery();
             if (results.next()) {
                 return new Employee(results);
