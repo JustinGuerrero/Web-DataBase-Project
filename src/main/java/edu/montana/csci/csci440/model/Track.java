@@ -146,6 +146,7 @@ public class Track extends Model {
     public void setGenreId(Long genreId) { this.genreId = genreId;}
 
     public String getArtistName() {
+
         // TODO implement more efficiently
         //  hint: cache on this model object
         return getAlbum().getArtist().getName();

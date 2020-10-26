@@ -77,11 +77,11 @@ public class Employee extends Model {
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "INSERT INTO employees (FirstName, LastName, title, Email) VALUES (?, ?, ?, ?)")) {
+                         "INSERT INTO employees (FirstName, LastName, title, Email) VALUES (?, ?, ?,?)")) {
                 stmt.setString(1, this.getFirstName());
                 stmt.setString(2, this.getLastName());
                 stmt.setString(3, this.getTitle());
-                stmt.setString(3, this.getEmail());
+                stmt.setString(4, this.getEmail());
                 stmt.executeUpdate();
                 employeeId = DB.getLastID(conn);
                 return true;
@@ -164,19 +164,7 @@ public class Employee extends Model {
         }
     }
     public Employee getBoss() {
-        try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM employees AS e\n" +
-                     "                  JOIN employees AS m ON m.EmployeeId = e.ReportsTo ")) {
-            stmt.setLong(1, this.getEmployeeId());
-            ResultSet results = stmt.executeQuery();
-            if (results.next()) {
-                return new Employee(results);
-            } else {
-                return null;
-            }
-        } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
-        }
+        return find(getReportsTo());
     }
 
     public static List<Employee> all() {
@@ -234,7 +222,7 @@ public class Employee extends Model {
 
 
     public void setReportsTo(Employee employee) {
-        // TODO implement
+        this.reportsTo = employee.getEmployeeId();
     }
 
     public static class SalesSummary {
