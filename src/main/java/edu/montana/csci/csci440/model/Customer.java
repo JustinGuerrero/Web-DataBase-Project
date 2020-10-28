@@ -33,6 +33,7 @@ public class Customer extends Model {
         lastName = results.getString("LastName");
         customerId = results.getLong("CustomerId");
         supportRepId = results.getLong("SupportRepId");
+        email = results.getString(("Email"));
     }
 
     public String getFirstName() {
@@ -79,7 +80,7 @@ public class Customer extends Model {
 
     public static Customer find(long customerId) {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM customers WHERE CustomerId=?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM customers WHERE CustomerId=? ORDER BY Email ")) {
             stmt.setLong(1, customerId);
             ResultSet results = stmt.executeQuery();
             if (results.next()) {

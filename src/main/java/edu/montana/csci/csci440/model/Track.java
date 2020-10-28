@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Track extends Model {
-
     private Long trackId;
     private Long albumId;
     private Long mediaTypeId = 1L;
@@ -146,7 +145,15 @@ public class Track extends Model {
     public void setGenreId(Long genreId) { this.genreId = genreId;}
 
     public String getArtistName() {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks" +
+                     " WHERE TrackId =?")) {
+            stmt.setLong(1, this.getTrackId());
+            stmt.executeQuery();
 
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
         // TODO implement more efficiently
         //  hint: cache on this model object
         return getAlbum().getArtist().getName();

@@ -26,6 +26,7 @@ public class Invoice extends Model {
     private Invoice(ResultSet results) throws SQLException {
         billingAddress = results.getString("BillingAddress");
         billingState = results.getString("BillingState");
+        billingCity = results.getString("BillingCity");
         billingCountry = results.getString("BillingCountry");
         billingPostalCode = results.getString("BillingPostalCode");
         total = results.getBigDecimal("Total");
@@ -116,8 +117,9 @@ public class Invoice extends Model {
 
     public static Invoice find(long invoiceId) {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM invoices INNNER JOIN invoice_items ii on INNNER.InvoiceId = ii.InvoiceId " +
-                     " WHERE CustomerId=? ORDER BY BillingAddress")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT *\n" +
+                     "FROM invoices INNER JOIN invoice_items ii on invoices.InvoiceId = ii.InvoiceId\n" +
+                     "WHERE invoices.InvoiceId=? ORDER BY InvoiceDate ASC")) {
             stmt.setLong(1, invoiceId);
             ResultSet results = stmt.executeQuery();
             if (results.next()) {

@@ -15,6 +15,7 @@ public class Artist extends Model {
 
     Long artistId;
     String name;
+    //String beep;
 
     public Artist() {
     }
@@ -36,13 +37,18 @@ public class Artist extends Model {
         this.artistId = artist.getArtistId();
     }
 
+
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+
+
     }
+
 
     public static List<Artist> all() {
         return all(0, Integer.MAX_VALUE);
@@ -113,18 +119,22 @@ public class Artist extends Model {
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "UPDATE artists  SET Name=? WHERE ArtistId=?")) {
+                         "UPDATE artists  SET Name = ? WHERE ArtistId=? AND Name = ?")) {
+
                 stmt.setString(1, this.getName());
                 stmt.setLong(2, this.getArtistId());
+                stmt.setString(3, this.getName());
                 stmt.executeUpdate();
                 return true;
-            } catch (SQLException sqlException) {
+             }catch (SQLException sqlException) {
                 throw new RuntimeException(sqlException);
             }
         } else {
             return false;
         }
     }
+    //use the values that when i do an update there isn't the same value expand artist ID to include
+    // the old artistID name if not old name, update
 
     @Override
     public void delete() {

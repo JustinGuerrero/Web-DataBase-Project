@@ -31,10 +31,27 @@ public class Employee extends Model {
     }
 
     public static List<Employee.SalesSummary> getSalesSummaries() {
-        //TODO - a GROUP BY query to determine the sales (look at the invoices table), using the SalesSummary class
-        return Collections.emptyList();
+            try (Connection conn = DB.connect();
+                 PreparedStatement stmt = conn.prepareStatement("" +
+                         "SELECT employees.*, i.*, COUNT(i.Total) AS SalesCount " +
+                         "FROM employees " +
+                         "INNER JOIN customers c on employees.EmployeeId = c.SupportRepId "+
+                         "INNER JOIN invoices i on c.CustomerId = i.CustomerId "+
+                         "GROUP BY Total "
+                         ))
+            {
+            ResultSet results = stmt.executeQuery();
+            List<Employee.SalesSummary> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new SalesSummary(results));
+        }
+        return resultList;
+    } catch(SQLException sqlException) {
+        throw new RuntimeException(sqlException);
+        }
     }
-
+    //TODO - a GROUP BY query to determine the sales (look at the invoices table),
+    // using the SalesSummary class
     @Override
     public boolean verify() {
         _errors.clear(); // clear any existing errors
@@ -191,7 +208,7 @@ public class Employee extends Model {
 
     public static Employee findByEmail(String newEmailAddress) {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT Email FROM employees WHERE EmployeeId=?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM employees WHERE Email=?")) {
             stmt.setString(1, newEmailAddress);
             ResultSet results = stmt.executeQuery();
             if (results.next()) {
