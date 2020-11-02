@@ -25,6 +25,8 @@ public class Track extends Model {
     private Long bytes= 0L;
     private BigDecimal unitPrice = new BigDecimal(0);
 
+    public static final String REDIS_CACHE_KEY = "cs440-tracks-count-cache";
+
     public Track() {
         // new track for insert
     }
