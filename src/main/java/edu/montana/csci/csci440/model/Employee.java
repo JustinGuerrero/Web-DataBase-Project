@@ -180,6 +180,7 @@ public class Employee extends Model {
             throw new RuntimeException(sqlException);
         }
     }
+
     public Employee getBoss() {
         return find(getReportsTo());
     }

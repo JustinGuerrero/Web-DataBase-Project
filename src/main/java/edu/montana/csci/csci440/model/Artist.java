@@ -15,7 +15,7 @@ public class Artist extends Model {
 
     Long artistId;
     String name;
-    //String beep;
+    String oldName;
 
     public Artist() {
     }
@@ -23,6 +23,7 @@ public class Artist extends Model {
     private Artist(ResultSet results) throws SQLException {
         name = results.getString("Name");
         artistId = results.getLong("ArtistId");
+        oldName = name;
     }
 
     public List<Album> getAlbums(){
@@ -37,18 +38,14 @@ public class Artist extends Model {
         this.artistId = artist.getArtistId();
     }
 
-
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
+        oldName = this.name;
         this.name = name;
-
-
     }
-
 
     public static List<Artist> all() {
         return all(0, Integer.MAX_VALUE);
@@ -104,6 +101,7 @@ public class Artist extends Model {
                          "INSERT INTO artists (Name) VALUES (?)")) {
                 stmt.setString(1, this.getName());
                 stmt.executeUpdate();
+                oldName = name;
                 artistId = DB.getLastID(conn);
                 return true;
             } catch (SQLException sqlException) {
@@ -120,12 +118,17 @@ public class Artist extends Model {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
                          "UPDATE artists  SET Name = ? WHERE ArtistId=? AND Name = ?")) {
-
                 stmt.setString(1, this.getName());
                 stmt.setLong(2, this.getArtistId());
-                stmt.setString(3, this.getName());
-                stmt.executeUpdate();
-                return true;
+                stmt.setString(3, this.oldName);
+
+                if(stmt.executeUpdate() == 0){
+                    return false;
+                }
+                else{
+                    stmt.executeUpdate();
+                    return true;
+                }
              }catch (SQLException sqlException) {
                 throw new RuntimeException(sqlException);
             }

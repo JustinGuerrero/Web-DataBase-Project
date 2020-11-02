@@ -15,7 +15,7 @@ public class EmployeeHelper {
         return "<ul>" + makeTree(employee, employeeMap) + "</ul>";
     }
 
-    // TODO - currently this method just usese the employee.getReports() function, which
+    // TODO - currently this method just uses the employee.getReports() function, which
     //  issues a query.  Change that to use the employeeMap variable instead
     public static String makeTree(Employee employee, Map<Long, List<Employee>> employeeMap) {
         String list = "<li><a href='/employees" + employee.getEmployeeId() + "'>"
