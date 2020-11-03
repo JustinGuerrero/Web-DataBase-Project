@@ -30,7 +30,11 @@ public class Track extends Model {
     public static final String REDIS_CACHE_KEY = "cs440-tracks-count-cache";
 
     public Track() {
-        // new track for insert
+        mediaTypeId = 1l;
+        genreId = 1l;
+        milliseconds  = 0l;
+        bytes  = 0l;
+        unitPrice = new BigDecimal("0");
     }
 
     Track(ResultSet results) throws SQLException {
@@ -47,7 +51,7 @@ public class Track extends Model {
 
     }
 
-    public static Track find(int i) {
+    public static Track find(long i) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks " +
                      "INNER JOIN albums a on a.AlbumId = tracks.AlbumId " +
