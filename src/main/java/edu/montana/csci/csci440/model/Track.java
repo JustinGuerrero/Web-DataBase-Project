@@ -24,6 +24,8 @@ public class Track extends Model {
     private Long milliseconds = 0L;
     private Long bytes= 0L;
     private BigDecimal unitPrice = new BigDecimal(0);
+    private String ArtistName;
+    private String AlbumName;
 
     public static final String REDIS_CACHE_KEY = "cs440-tracks-count-cache";
 
@@ -40,11 +42,16 @@ public class Track extends Model {
         albumId = results.getLong("AlbumId");
         mediaTypeId =1L;//results.getLong("MediaTypeId");
         genreId = 1L;//results.getLong("GenreId");
+        ArtistName = results.getString("ArtistName");
+        AlbumName = results.getString("AlbumName");
+
     }
 
     public static Track find(int i) {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks WHERE TrackId=?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks " +
+                     "INNER JOIN albums a on a.AlbumId = tracks.AlbumId " +
+                     "INNER JOIN artists ArtistName on ArtistName.ArtistId = a.ArtistId WHERE TrackId=?")) {
             stmt.setLong(1, i);
             ResultSet results = stmt.executeQuery();
             if (results.next()) {
@@ -148,7 +155,7 @@ public class Track extends Model {
 
     public String getArtistName() {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks" +
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks AS ArtistName" +
                      " WHERE TrackId =?")) {
             stmt.setLong(1, this.getTrackId());
             stmt.executeQuery();
