@@ -27,6 +27,8 @@ public class Track extends Model {
     private String ArtistName;
     private String AlbumName;
 
+
+
     public static final String REDIS_CACHE_KEY = "cs440-tracks-count-cache";
 
     public Track() {
@@ -53,9 +55,11 @@ public class Track extends Model {
 
     public static Track find(long i) {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks " +
-                     "INNER JOIN albums a on a.AlbumId = tracks.AlbumId " +
-                     "INNER JOIN artists ArtistName on ArtistName.ArtistId = a.ArtistId WHERE TrackId=?")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT tracks.*, Albums.Title as AlbumName, Artists.Name as ArtistName\n" +
+                     "FROM tracks\n" +
+                     "         INNER JOIN albums ON albums.AlbumID = tracks.AlbumID\n" +
+                     "         INNER JOIN artists ON artists.ArtistId = albums.ArtistId\n" +
+                     "WHERE TrackId =?")) {
             stmt.setLong(1, i);
             ResultSet results = stmt.executeQuery();
             if (results.next()) {
@@ -158,24 +162,14 @@ public class Track extends Model {
     public void setGenreId(Long genreId) { this.genreId = genreId;}
 
     public String getArtistName() {
-        try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM tracks AS ArtistName" +
-                     " WHERE TrackId =?")) {
-            stmt.setLong(1, this.getTrackId());
-            stmt.executeQuery();
+        return ArtistName;
 
-        } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
-        }
-        // TODO implement more efficiently
-        //  hint: cache on this model object
-        return getAlbum().getArtist().getName();
     }
 
     public String getAlbumTitle() {
         // TODO implement more efficiently
         //  hint: cache on this model object
-        return getAlbum().getTitle();
+        return AlbumName;
     }
 
     public static List<Track> advancedSearch(int page, int count,
@@ -261,7 +255,10 @@ public class Track extends Model {
     public static List<Track> all(int page, int count, String orderBy) {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM tracks LIMIT ? OFFSET ?"
+                     "SELECT tracks.*, Albums.Title as AlbumName, Artists.Name as ArtistName FROM tracks " +
+                             "INNER JOIN albums ON albums.AlbumID = tracks.AlbumID " +
+                             "INNER JOIN artists ON artists.ArtistId = albums.ArtistId" +
+                             " ORDER BY " + orderBy + " ASC LIMIT  ? OFFSET ?"
              )) {
             stmt.setInt(1, count);
             stmt.setInt(2, (page-1)*count);
@@ -337,7 +334,7 @@ public class Track extends Model {
     public void delete() {
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "DELETE FROM tracks WHERE Name=?")) {
+                     "DELETE FROM tracks WHERE TrackId=?")) {
             stmt.setLong(1, this.getTrackId());
             stmt.executeUpdate();
         } catch (SQLException sqlException) {

@@ -33,7 +33,7 @@ public class Employee extends Model {
     public static List<Employee.SalesSummary> getSalesSummaries() {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement("" +
-                         "SELECT employees.*, i.*, COUNT(i.Total) AS SalesCount " +
+                         "SELECT employees.*, i.Total AS SalesTotal, COUNT(i.Total) AS SalesCount " +
                          "FROM employees " +
                          "INNER JOIN customers c on employees.EmployeeId = c.SupportRepId "+
                          "INNER JOIN invoices i on c.CustomerId = i.CustomerId "+
