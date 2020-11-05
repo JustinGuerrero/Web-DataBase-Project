@@ -33,11 +33,11 @@ public class Employee extends Model {
     public static List<Employee.SalesSummary> getSalesSummaries() {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement("" +
-                         "SELECT employees.*, i.Total AS SalesTotal, COUNT(i.Total) AS SalesCount " +
+                         "SELECT employees.*, ROUND(SUM(i.Total),2) AS SalesTotal, COUNT(i.Total) AS SalesCount " +
                          "FROM employees " +
                          "INNER JOIN customers c on employees.EmployeeId = c.SupportRepId "+
                          "INNER JOIN invoices i on c.CustomerId = i.CustomerId "+
-                         "GROUP BY Total "
+                         "GROUP BY employees.FirstName "
                          ))
             {
             ResultSet results = stmt.executeQuery();

@@ -26,10 +26,15 @@ public class Playlist extends Model {
 
     public List<Track> getTracks() {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM tracks inner join playlist_track pt " +
-                             "on pt.TrackId = tracks.TrackId WHERE PlaylistId = ? " +
-                             "ORDER BY tracks.Name ASC")) {
+             PreparedStatement stmt = conn.prepareStatement("SELECT *, Albums.Title as AlbumName, Artists.Name as ArtistName " +
+                     " FROM tracks " +
+                     " INNER JOIN playlist_track pt on tracks.TrackId = pt.TrackId" +
+                     " INNER JOIN albums ON albums.AlbumID = tracks.AlbumID " +
+                     "INNER JOIN artists ON artists.ArtistId = albums.ArtistId" +
+                     " WHERE PlaylistId =? ORDER BY tracks.Name ASC")){
+//                     "SELECT * FROM tracks inner join playlist_track pt " +
+//                             "on pt.TrackId = tracks.TrackId WHERE PlaylistId = ? " +
+//                             "ORDER BY tracks.Name ASC")) {
             stmt.setLong(1, this.getPlaylistId());
             ResultSet results = stmt.executeQuery();
             List<Track> resultList = new LinkedList<>();
