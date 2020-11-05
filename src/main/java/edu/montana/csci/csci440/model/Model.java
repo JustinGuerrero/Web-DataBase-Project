@@ -59,7 +59,7 @@ public class Model {
         for (Field declaredField : declaredFields) {
             declaredField.setAccessible(true);
             try {
-                if (Objects.equals(declaredField.get(this), (declaredField.get(obj)))) {
+                if (!Objects.equals(declaredField.get(this), (declaredField.get(obj)))) {
                     return false;
                 }
             } catch (IllegalAccessException e) {
