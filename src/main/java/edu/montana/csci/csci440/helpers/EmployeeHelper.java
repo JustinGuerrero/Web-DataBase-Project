@@ -10,21 +10,34 @@ import java.util.Map;
 
 public class EmployeeHelper {
     public static String makeEmployeeTree() {
+        // TODO, change this to use a single query operation to get all employees
         Employee employee = Employee.find(1); // root employee
         // and use this data structure to maintain reference information needed to build the tree structure
-        Map<Long, List<Employee>> employeeMap = new HashMap<>();
         Jedis redis = new Jedis();
         String str = redis.get("cs440-employee-tree-cache");
+
+        Map<String, List<Employee>> titleMap = new HashMap<>();
+//        List<Employee> all = Employee.all();
+        for(Employee emp : Employee.all()){
+            String title = emp.getTitle();
+            List<Employee> employeesWithTitle = titleMap.get(title);
+            if(employeesWithTitle == null){
+                employeesWithTitle = new LinkedList<>();
+                titleMap.put(title, employeesWithTitle);
+            }
+            employeesWithTitle.add(emp);
+
+        }
         if (str == null){
-            str = "<ul>" + makeTree(employee, employeeMap) + "</ul>";
+            str = "<ul>" + makeTree(employee, titleMap) + "</ul>";
             redis.set("cs440-employee-tree-cache", str);
         }
-        return str;
+        return "<ul>" + makeTree(employee, titleMap) + "</ul>";
     }
 
-    // TODO - currently this method just usese the employee.getReports() function, which
+    // TODO - currently this method just uses the employee.getReports() function, which
     //  issues a query.  Change that to use the employeeMap variable instead
-    public static String makeTree(Employee employee, Map<Long, List<Employee>> employeeMap) {
+    public static String makeTree(Employee employee, Map<String, List<Employee>> employeeMap) {
         String list = "<li><a href='/employees" + employee.getEmployeeId() + "'>"
                 + employee.getEmail() + "</a><ul>";
         List<Employee> reports = employee.getReports();

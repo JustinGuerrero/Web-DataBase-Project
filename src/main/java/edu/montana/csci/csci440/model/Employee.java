@@ -148,6 +148,7 @@ public class Employee extends Model {
     public void setTitle(String programmer) {
         title = programmer;
     }
+
     public String getTitle(){
         return title;
     }
