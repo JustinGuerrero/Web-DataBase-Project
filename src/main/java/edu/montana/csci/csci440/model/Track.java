@@ -55,7 +55,8 @@ public class Track extends Model {
 
     public static Track find(long i) {
         try (Connection conn = DB.connect();
-             PreparedStatement stmt = conn.prepareStatement("SELECT tracks.*, Albums.Title as AlbumName, Artists.Name as ArtistName\n" +
+             PreparedStatement stmt = conn.prepareStatement("SELECT tracks.*, Albums.Title as AlbumName, " +
+                     "Artists.Name as ArtistName\n" +
                      "FROM tracks\n" +
                      "         INNER JOIN albums ON albums.AlbumID = tracks.AlbumID\n" +
                      "         INNER JOIN artists ON artists.ArtistId = albums.ArtistId\n" +
@@ -74,11 +75,17 @@ public class Track extends Model {
 
     public static Long count() {
         Jedis redisClient = new Jedis(); // use this class to access redis and create a cache
+        String stringVal = redisClient.get(REDIS_CACHE_KEY);
+        if(stringVal != null){
+            return Long.parseLong(stringVal);
+        }
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) as Count FROM tracks")) {
             ResultSet results = stmt.executeQuery();
             if (results.next()) {
-                return results.getLong("Count");
+                long count = results.getLong("Count");
+                redisClient.set(REDIS_CACHE_KEY, Long.toString(count));
+                return count;
             } else {
                 throw new IllegalStateException("Should find a count!");
             }
@@ -97,8 +104,25 @@ public class Track extends Model {
     public Genre getGenre() {
         return null;
     }
-    public List<Playlist> getPlaylists(){
-        return Collections.emptyList();
+
+    public List<Playlist> getPlaylists() {
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT * FROM playlists PL INNER JOIN playlist_track pt on pt.PlaylistId = PL.PlaylistId INNER JOIN tracks t ON t.TrackId = pt.TrackId WHERE ? = pt.TrackId AND PL.PlaylistId = pt.PlaylistId"
+
+             )) {
+            stmt.setLong(1, this.getTrackId());
+            ResultSet results = stmt.executeQuery();
+            List<Playlist> resultList = new LinkedList<>();
+            while (results.next()) {
+                Playlist PlaylistAdd = new Playlist(results);
+                resultList.add(PlaylistAdd);
+            }
+            return resultList;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
+
     }
 
     public Long getTrackId() {
@@ -167,8 +191,6 @@ public class Track extends Model {
     }
 
     public String getAlbumTitle() {
-        // TODO implement more efficiently
-        //  hint: cache on this model object
         return AlbumName;
     }
 
@@ -227,7 +249,11 @@ public class Track extends Model {
     }
 
     public static List<Track> forAlbum(Long albumId) {
-        String query = "SELECT * FROM tracks WHERE AlbumId=?";
+        String query = "SELECT tracks.*, Albums.Title as AlbumName, Artists.Name as ArtistName " +
+                "From tracks " +
+                "INNER JOIN albums on albums.AlbumId = tracks.AlbumId " +
+                "INNER JOIN artists on tracks.Name = artists.Name " +
+                "WHERE tracks.AlbumId=?";
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setLong(1, albumId);
@@ -288,10 +314,13 @@ public class Track extends Model {
 
     @Override
     public boolean create() {
+        Jedis redisClient = new Jedis();
+        redisClient.flushDB();
         if (verify()) {
             try (Connection conn = DB.connect();
                  PreparedStatement stmt = conn.prepareStatement(
-                         "INSERT INTO tracks (name, Milliseconds, Bytes, UnitPrice, AlbumId, MediaTypeId, GenreId) VALUES (?,?,?,?,?,?,?)")) {
+                         "INSERT INTO tracks (name, Milliseconds, Bytes, UnitPrice, AlbumId, MediaTypeId, GenreId)" +
+                                 " VALUES (?,?,?,?,?,?,?)")) {
                 stmt.setString(1, this.getName());
                 stmt.setLong(2, this.getMilliseconds());
                 stmt.setLong(3, this.getBytes());
@@ -332,6 +361,8 @@ public class Track extends Model {
 
     @Override
     public void delete() {
+        Jedis redisClient = new Jedis();
+        redisClient.flushDB();
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
                      "DELETE FROM tracks WHERE TrackId=?")) {

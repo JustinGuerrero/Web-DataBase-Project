@@ -29,6 +29,69 @@
     </tbody>
 </table>
 
+<h2>Invoice</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    </thead>
+    <thead>
+    <tr>
+        <th>Billing Address</th>
+        <th>$!invoice.BillingAddress</th>
+    </tr>
+    <tr>
+        <th>Billing City</th>
+        <th>$!invoice.BillingCity</th>
+    </tr>
+    <tr>
+        <th>Billing State</th>
+        <th>$!invoice.BillingState</th>
+    </tr>
+    <tr>
+        <th>Billing Country</th>
+        <th>$!invoice.BillingCountry</th>
+    </tr>
+    <tr>
+        <th>Billing Postal Code</th>
+        <th>$!invoice.BillingPostalCode</th>
+    </tr>
+    <tr>
+        <th>Total</th>
+        <th>$!invoice.Total</th>
+    </tr>
+    </thead>
+</table>
+
+<h4>Invoice Items</h4>
+<table>
+    <thead>
+    <tr>
+        <th>InvoiceLineId</th>
+        <th>TrackId</th>
+        <th>UnitPrice</th>
+        <th>Quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+        #foreach( $item in $invoice.InvoiceItems )
+        <tr>
+            <td>$!item.InvoiceLineId</td>
+            <td>$!item.TrackId</td>
+            <td>$!item.UnitPrice</td>
+            <td>$!item.Quantity</td>
+        </tr>
+        #end
+    </tbody>
+</table>
+
+
+
+
+
 <a href="/customers/$customer.CustomerId/edit">[Edit Customer]</a>
 <a href="/customers/$customer.CustomerId/delete">[Delete Customer]</a>
 
