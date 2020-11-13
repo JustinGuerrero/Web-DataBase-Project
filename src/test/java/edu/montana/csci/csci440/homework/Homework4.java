@@ -17,7 +17,7 @@ public class Homework4 extends DBTest {
 
     @Test
     /*
-     * Use a transaction to safely move milliseconds from one track to anotherls
+     * Use a transaction to safely move milliseconds from one track to another
      *
      * You will need to use the JDBC transaction API, outlined here:
      *
@@ -33,15 +33,17 @@ public class Homework4 extends DBTest {
 
         try(Connection connection = DB.connect()){
             connection.setAutoCommit(false);
-            PreparedStatement subtract = connection.prepareStatement("UPDATE tracks SET TrackId = ? where TrackId = ?");
-            subtract.setLong(1, 0);
-            subtract.setLong(2, 0);
+            PreparedStatement subtract = connection.prepareStatement("UPDATE tracks SET Milliseconds = ? where TrackId = ?");
+            subtract.setLong(1, track1InitialTime - 10);
+            subtract.setLong(2, 1);
             subtract.execute();
 
-            PreparedStatement add = connection.prepareStatement("UPDATE tracks SET TrackId = ? where TrackId = ?");
-            subtract.setLong(1, 0);
-            subtract.setLong(2, 0);
-            subtract.execute();
+
+            PreparedStatement add = connection.prepareStatement("UPDATE tracks SET Milliseconds = ? where TrackId = ?");
+            add.setLong(1, (track2InitialTime + 10));
+            add.setLong(2, 2);
+            add.execute();
+            connection.commit();
 
             // commit with the connection
         }
