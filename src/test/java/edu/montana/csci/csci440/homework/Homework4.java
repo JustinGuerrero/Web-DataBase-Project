@@ -33,12 +33,12 @@ public class Homework4 extends DBTest {
 
         try(Connection connection = DB.connect()){
             connection.setAutoCommit(false);
-            PreparedStatement subtract = connection.prepareStatement("TODO");
+            PreparedStatement subtract = connection.prepareStatement("UPDATE tracks SET TrackId = ? where TrackId = ?");
             subtract.setLong(1, 0);
             subtract.setLong(2, 0);
             subtract.execute();
 
-            PreparedStatement add = connection.prepareStatement("TODO");
+            PreparedStatement add = connection.prepareStatement("UPDATE tracks SET TrackId = ? where TrackId = ?");
             subtract.setLong(1, 0);
             subtract.setLong(2, 0);
             subtract.execute();
@@ -66,12 +66,16 @@ public class Homework4 extends DBTest {
     public void selectPopularTracksAndTheirAlbums() throws SQLException {
 
         // HINT: join to invoice items and do a group by/having to get the right answer
-        List<Map<String, Object>> tracks = executeSQL("");
+        List<Map<String, Object>> tracks = executeSQL("SELECT * from tracks\n" +
+                "INNER JOIN invoice_items ii on tracks.TrackId = ii.TrackId\n" +
+                "group by ii.TrackId HAVING COUNT(Quantity) > 1");
         assertEquals(256, tracks.size());
 
         // HINT: join to tracks and invoice items and do a group by/having to get the right answer
         //       note: you will need to use the DISTINCT operator to get the right result!
-        List<Map<String, Object>> albums = executeSQL("");
+        List<Map<String, Object>> albums = executeSQL("SELECT DISTINCT AlbumId from tracks\n" +
+                "INNER JOIN invoice_items ii on tracks.TrackId = ii.TrackId\n" +
+                "group by ii.TrackId HAVING COUNT(Quantity) > 1");
         assertEquals(166, albums.size());
     }
 
@@ -84,7 +88,9 @@ public class Homework4 extends DBTest {
      * */
     public void selectCustomersMeetingCriteria() throws SQLException {
         // HINT: join to invoice items and do a group by/having to get the right answer
-        List<Map<String, Object>> tracks = executeSQL("" );
+        List<Map<String, Object>> tracks = executeSQL("SELECT customers.* from customers\n" +
+                "inner join employees e on e.EmployeeId = customers.SupportRepId\n" +
+                "GROUP BY customers.Email HAVING SupportRepId = 3" );
         assertEquals(21, tracks.size());
     }
 
