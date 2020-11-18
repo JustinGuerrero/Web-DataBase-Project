@@ -15,7 +15,7 @@ public class EmployeeHelper {
         Map<Long, List<Employee>> reportsMap = new HashMap<>();
         for (Employee emp : Employee.all()) {
             long reportsTo = emp.getReportsTo();
-            List<Employee> employeeReportsList = reportsMap.get(reportsMap);
+            List<Employee> employeeReportsList = reportsMap.get(reportsTo);
             if (employeeReportsList == null) {
                 employeeReportsList = new LinkedList<>();
                 reportsMap.put(reportsTo, employeeReportsList);
@@ -30,12 +30,13 @@ public class EmployeeHelper {
     public static String makeTree(Employee employee, Map<Long, List<Employee>> employeeMap) {
         String list = "<li><a href='/employees" + employee.getEmployeeId() + "'>"
                 + employee.getEmail() + "</a><ul>";
-        List<Employee> reports = employeeMap.get(employee);
-        if(reports != null) {
+        List<Employee> reports = employeeMap.get(employee.getEmployeeId());
+        if(reports == null) {
+            reports = new LinkedList<>();
+        }
             for (Employee report : reports) {
                 list += makeTree(report, employeeMap);
             }
-        }
         return list + "</ul></li>";
     }
 }

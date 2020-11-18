@@ -33,9 +33,11 @@ public class Artist extends Model {
     public Long getArtistId() {
         return artistId;
     }
-
+    public void setArtistId(Long artist) {
+        artistId = artist;
+    }
     public void setArtist(Artist artist) {
-        this.artistId = artist.getArtistId();
+        artistId = artist.getArtistId();
     }
 
     public String getName() {

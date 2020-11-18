@@ -193,20 +193,28 @@ public class Track extends Model {
     public String getAlbumTitle() {
         return AlbumName;
     }
+    //"SELECT tracks.*, Albums.Title as AlbumName, " +
+    //                     "Artists.Name as ArtistName\n" +
+    //                     "FROM tracks\n" +
+    //                     "         INNER JOIN albums ON albums.AlbumID = tracks.AlbumID\n" +
+    //                     "         INNER JOIN artists ON artists.ArtistId = albums.ArtistId\n" +
+    //                     "WHERE TrackId =?
 
     public static List<Track> advancedSearch(int page, int count,
                                              String search, Integer artistId, Integer albumId,
                                              Integer maxRuntime, Integer minRuntime) {
         LinkedList<Object> args = new LinkedList<>();
 
-        String query = "SELECT * FROM tracks " +
-                "JOIN albums ON tracks.AlbumId = albums.AlbumId " +
-                "WHERE name LIKE ?";
+        String query = "SELECT tracks.*, Albums.Title As AlbumName, " +
+                "Artists.Name as ArtistName FROM tracks " +
+                "INNER JOIN albums on albums.AlbumId = tracks.AlbumId " +
+                "INNER JOIN artists on artists.ArtistId = albums.ArtistId " +
+                "WHERE tracks.name LIKE ?";
         args.add("%" + search + "%");
 
         // Conditionally include the query and argument
         if (artistId != null) {
-            query += " AND ArtistId=? ";
+            query += " AND artists.ArtistId=? ";
             args.add(artistId);
         }
 
@@ -231,7 +239,11 @@ public class Track extends Model {
     }
 
     public static List<Track> search(int page, int count, String orderBy, String search) {
-        String query = "SELECT * FROM tracks WHERE name LIKE ? LIMIT ?";
+        String query = "SELECT tracks.*, Albums.Title As AlbumName, " +
+                "Artists.Name as ArtistName FROM tracks " +
+                "INNER JOIN albums on albums.AlbumId = tracks.AlbumId " +
+                "INNER JOIN artists on artists.ArtistId = albums.ArtistId" +
+                " WHERE tracks.name LIKE ? LIMIT ?";
         search = "%" + search + "%";
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {

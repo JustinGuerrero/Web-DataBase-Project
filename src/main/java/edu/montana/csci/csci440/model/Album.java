@@ -15,6 +15,7 @@ public class Album extends Model {
     Long albumId;
     Long artistId;
     String title;
+    String ArtistId;
 
     public Album() {
     }
@@ -31,6 +32,10 @@ public class Album extends Model {
 
     public void setArtist(Artist artist) {
         artistId = artist.getArtistId();
+    }
+
+    public void setArtistId(Long artist){
+        this.artistId = artist;
     }
 
     public List<Track> getTracks() {
@@ -103,10 +108,10 @@ public class Album extends Model {
     public boolean verify() {
         _errors.clear(); // clear any existing errors
         if (title == null || "".equals(title)) {
-            addError("Can't be null or blank!");
+            addError("title Can't be null or blank!");
         }
         if (artistId == null || "".equals(artistId)){
-            addError("Can't be null or blank dood!");
+            addError("Cartists an't be null or blank dood!");
         }
         return !hasErrors();
     }
