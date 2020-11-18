@@ -27,47 +27,15 @@
 Resetting DB After Test...
 Resetting DB After Test...
 Resetting DB After Test...
-[ERROR] Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.15 s <<< FAILURE! - in edu.montana.csci.csci440.homework.Homework4
-[ERROR] useATransactionToSafelyMoveMillisecondsFromOneTrackToAnother  Time elapsed: 0.139 s  <<< ERROR!
-org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (near "TODO": syntax error)
-	at edu.montana.csci.csci440.homework.Homework4.useATransactionToSafelyMoveMillisecondsFromOneTrackToAnother(Homework4.java:36)
-
-[ERROR] selectPopularTracksAndTheirAlbums  Time elapsed: 0.003 s  <<< ERROR!
-java.lang.RuntimeException: java.sql.SQLException: The prepared statement has been finalized
-	at edu.montana.csci.csci440.homework.Homework4.selectPopularTracksAndTheirAlbums(Homework4.java:69)
-Caused by: java.sql.SQLException: The prepared statement has been finalized
-	at edu.montana.csci.csci440.homework.Homework4.selectPopularTracksAndTheirAlbums(Homework4.java:69)
-
-[ERROR] selectCustomersMeetingCriteria  Time elapsed: 0.003 s  <<< ERROR!
-java.lang.RuntimeException: java.sql.SQLException: The prepared statement has been finalized
-	at edu.montana.csci.csci440.homework.Homework4.selectCustomersMeetingCriteria(Homework4.java:87)
-Caused by: java.sql.SQLException: The prepared statement has been finalized
-	at edu.montana.csci.csci440.homework.Homework4.selectCustomersMeetingCriteria(Homework4.java:87)
-
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.206 s - in edu.montana.csci.csci440.homework.Homework4
 [INFO] 
 [INFO] Results:
 [INFO] 
-[ERROR] Errors: 
-[ERROR]   Homework4.selectCustomersMeetingCriteria:87->DBTest.executeSQL:58 » Runtime ja...
-[ERROR]   Homework4.selectPopularTracksAndTheirAlbums:69->DBTest.executeSQL:58 » Runtime
-[ERROR]   Homework4.useATransactionToSafelyMoveMillisecondsFromOneTrackToAnother:36 » SQLite
-[INFO] 
-[ERROR] Tests run: 3, Failures: 0, Errors: 3, Skipped: 0
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
 [INFO] 
 [INFO] ------------------------------------------------------------------------
-[INFO] BUILD FAILURE
+[INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  2.021 s
-[INFO] Finished at: 2020-11-12T21:25:42-07:00
+[INFO] Total time:  2.130 s
+[INFO] Finished at: 2020-11-14T08:50:47-07:00
 [INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.22.1:test (default-test) on project CSCI_440_Project: There are test failures.
-[ERROR] 
-[ERROR] Please refer to /home/carson/Projects/msu/csci-440-fall2020/grading/scripts/repos/justin_guerrero/target/surefire-reports for the individual test results.
-[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
-[ERROR] -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
